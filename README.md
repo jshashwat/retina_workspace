@@ -6,6 +6,8 @@ Basic Algorithm Flow: (Initial Iteration, No error handling)
 
 
 Functions:
+
+```
 poll_running_queue():
 	for tasks in running_queue:
 		status = non_blocking_read(tasks[i].hlsstreamOut)
@@ -18,7 +20,8 @@ poll_running_queue():
 				update_running_queue();
 			else:
 				add_to_wait_queue();
-
+```
+```
 args (GMEM buffer start pointer, HLS stream connections)
 arbitrar start:
 load tasks: // Load and schedule tasks until CU exhaustion
@@ -50,14 +53,18 @@ poll_running_queue ();
 					add_to_running_queue();
 					remove_from_wait_queue();
 return:
+```
 
 Kernels Interface:
 
 Input Arguments : (*in , *sub , HLS_IN, HLS_OUT) 
 
 *in : Pointer to start the input buffer.
+
 *sub : Pointer to start of the buffer used for internal processing.
+
 HLS_IN: Input HLS stream connection with arbitrar to receive the processing header with all the information mentioned before
+
 HLS_OUT: Output  HLS stream connection with arbitrar to send an acknowledgement to arbitrar to know that the processing is completed on the given input.
 
 Header exchange needs to have a fields separately for kernel algorithm related arguments : Ex: Resizing (sizing window), Brightness (percentage) (Since kernels will be static and logic in arbitrer will have static knowledge of kernels, header population will be different for different kernels)
@@ -67,6 +74,7 @@ Output from Kernels: (Input Header for acknowledgement without the kernel specif
 
 General Algo for Computational Kernels:
 
+```
 kernel start:
 	read kernel header();
 	input_sanity_checks();
@@ -74,3 +82,4 @@ kernel start:
 	prepare acknowledgement header;
 	write to output stream;
 end:
+```
