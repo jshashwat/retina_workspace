@@ -17,10 +17,16 @@ using namespace std;
 #define K_BUFFERS 8					// Hardcoding for now. Decided based on final number of computational kernels running.
 #define N_PIPELINE_STAGE 3
 
+#define BUFFER_FREE 0
+#define BUFFER_READ 1
+#define BUFFER_WRITE 2
+
+#define INVALID_KERNEL 0
+
 typedef struct data
 {
 	int op_id[N_PIPELINE_STAGE];
-	int in;
+	int in_off;
 	int out_off;
 	int kargs[N_PIPELINE_STAGE];	// This field will be extended for images (Support Multiple arguments)
 
@@ -45,3 +51,20 @@ typedef struct kernelHeader
 	int karg;					// Increase as per usage. For basic design keeping it 1.
 
 } __attribute__((packed, aligned(4))) kernelHeader;
+
+typedef struct bufferInfo
+{
+	unsigned short buffer_status;
+	int kernel_instance_ID;
+	
+} __attribute__((packed, aligned(4))) bufferInfo;
+
+typedef struct rQueue
+{
+	int seqNum;					// Seqeunce number to verify entry populated from Stream
+	int kernel_instance_ID;		// Kernel ID to poll correct stream for pieline data
+
+} __attribute__((packed, aligned(4))) rQueue;
+
+#define wQueue kernelHeader 	// WaitQueue should have all the entries as in the kernel header.
+
